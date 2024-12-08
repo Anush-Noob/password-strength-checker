@@ -18,9 +18,6 @@ Provides recommendations to improve password strength, such as adding uppercase 
 Password Visibility Toggle:
 Easily toggle between showing and hiding the password for convenience.
 
-🖼️ Demo Screenshot
-Add a screenshot here showing the Password Strength Checker interface.
-
 📋 How It Works
 Password Strength Evaluation:
 Passwords are scored based on the following criteria:
