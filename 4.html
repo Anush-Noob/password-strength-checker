@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Strength Tester</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #1a1a1a;
+            margin: 0;
+        }
+
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        .inputBox {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .inputBox input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        .toggle-password {
+            padding: 10px 15px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .toggle-password:hover {
+            background: #0056b3;
+        }
+
+        .strengthMeter {
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            margin-bottom: 15px;
+        }
+
+        .container.weak .strengthMeter {
+            background: #ff4d4d;
+        }
+
+        .container.medium .strengthMeter {
+            background: #ffa500;
+        }
+
+        .container.strong .strengthMeter {
+            background: #4caf50;
+        }
+
+        .suggestions {
+            font-size: 14px;
+            color: #555;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Password Strength Tester</h2>
+        <div class="inputBox">
+            <input type="password" placeholder="Enter your password" id="myPassword">
+            <button class="toggle-password" aria-label="Show password">Show</button>
+        </div>
+        <div class="strengthMeter" role="progressbar" aria-label="Password strength"></div>
+        <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <script>
+        function Strength(password) {
+            let score = 0;
+            if (password.length > 6) score++;
+            if (password.length >= 10) score++;
+            if (/[A-Z]/.test(password)) score++;
+            if (/[a-z]/.test(password)) score++;
+            if (/[0-9]/.test(password)) score++;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score++;
+            return score;
+        }
+
+        function getSuggestions(password) {
+            const suggestions = [];
+            if (password.length < 8) suggestions.push("Make it at least 8 characters long.");
+            if (!/[A-Z]/.test(password)) suggestions.push("Add at least one uppercase letter.");
+            if (!/[a-z]/.test(password)) suggestions.push("Add at least one lowercase letter.");
+            if (!/[0-9]/.test(password)) suggestions.push("Add at least one number.");
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) suggestions.push("Add at least one special character.");
+            return suggestions.length > 0 ? suggestions.join(' ') : "Your password is strong!";
+        }
+
+        const container = document.querySelector('.container');
+        const suggestionsElement = document.getElementById('suggestions');
+
+        document.addEventListener("keyup", function () {
+            const password = document.querySelector('#myPassword').value;
+            const strength = Strength(password);
+            const suggestions = getSuggestions(password);
+
+            // Update strength meter
+            container.classList.remove('weak', 'medium', 'strong'); // Clear all classes first
+            if (strength <= 2) {
+                container.classList.add('weak');
+            } else if (strength <= 4) {
+                container.classList.add('medium');
+            } else {
+                container.classList.add('strong');
+            }
+
+            // Update suggestions
+            suggestionsElement.textContent = suggestions;
+        });
+
+        const passwordInput = document.querySelector('#myPassword');
+        const togglePasswordButton = document.querySelector('.toggle-password');
+
+        togglePasswordButton.onclick = function () {
+            const isPassword = passwordInput.type === 'password';
+            passwordInput.type = isPassword ? 'text' : 'password';
+            togglePasswordButton.textContent = isPassword ? 'Hide' : 'Show';
+            togglePasswordButton.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+        };
+    </script>
+</body>
+
+</html>
